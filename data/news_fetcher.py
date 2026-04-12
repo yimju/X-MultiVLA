@@ -146,13 +146,12 @@ class NewsFetcher:
         chart_df: pd.DataFrame,
         news_df: pd.DataFrame,
     ) -> pd.DataFrame:
-        """
-        차트의 각 타임스탬프에 직전에 발생한 뉴스 감성을 붙입니다.
-        뉴스가 없는 시간대는 0으로 채웁니다 (Zero Vector).
-        """
-        chart = chart_df.reset_index().rename(columns={"timestamp": "ts"})
-        news  = news_df[["news_published_at", "news_pos", "news_neg", "news_neu", "news_sentiment_score"]].copy()
-        news  = news.rename(columns={"news_published_at": "ts"})
+        # ✅ 인덱스 이름에 관계없이 'ts' 컬럼으로 통일
+        chart = chart_df.reset_index()
+        chart.columns.values[0] = 'ts'   # 첫 번째 컬럼(인덱스였던 것)을 ts로 강제 변경
+
+        news = news_df[["news_published_at", "news_pos", "news_neg", "news_neu", "news_sentiment_score"]].copy()
+        news = news.rename(columns={"news_published_at": "ts"})
 
         chart["ts"] = pd.to_datetime(chart["ts"], utc=True)
         news["ts"]  = pd.to_datetime(news["ts"],  utc=True)
@@ -161,10 +160,9 @@ class NewsFetcher:
             chart.sort_values("ts"),
             news.sort_values("ts"),
             on="ts",
-            direction="backward",   # 뉴스 발생 직후 차트에 매핑
+            direction="backward",
         )
 
-        # 뉴스 없는 구간 0으로 채움 (ZeroVector → 모델이 뉴스 없음으로 인식)
         for col in ["news_pos", "news_neg", "news_neu", "news_sentiment_score"]:
             merged[col] = merged[col].fillna(0.0)
 
