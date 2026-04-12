@@ -1,0 +1,15 @@
+# 원시 데이터 및 모델 체크포인트 (용량 큼)
+data/raw/
+checkpoints/
+outputs/
+logs/
+
+# 환경 설정 / 비밀키
+.env
+config_secret.py
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
