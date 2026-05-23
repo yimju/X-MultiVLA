@@ -8,7 +8,7 @@ import os
 # ── Paths ─────────────────────────────────────────────────────────────────────
 # Google Colab (default)
 REV4_ROOT  = "/content/drive/MyDrive/X-MultiVLA_rev4"
-DATA_DIR   = "/content/drive/MyDrive/X-MultiVLA_rev2_5Simbols/data"   # shared data from Rev3
+DATA_DIR   = f"{REV4_ROOT}/data"
 CKPT_DIR   = f"{REV4_ROOT}/checkpoints"
 OUT_DIR    = f"{REV4_ROOT}/outputs"
 LOG_DIR    = f"{REV4_ROOT}/logs"
