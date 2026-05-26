@@ -173,3 +173,20 @@ If you use this code, please cite:
 X-MultiVLA Rev4: VLA-Inspired Multi-Asset Crypto Portfolio Management
 Graduate project, Hanyang University, 2026
 ```
+
+
+## v15 — 2-Level iTransformer
+### Architecture
+- **2-Level iTransformer**: Level-1 attends across 110 feature tokens per coin,
+  Level-2 attends across 5 coin tokens → `(v_emb: B×1280, coin_repr: B×5×256)`
+- **ActionHead**: `h + w_proj(prev_w) + r_proj(regime_emb) + cash_bias → softmax`
+- **PriceHead**: per-coin horizon MIN/MAX return prediction (auxiliary loss)
+- No rule-based constraints — pure learned allocation
+
+### Training
+- **Phase 1**: Oracle Sortino GT (multi-horizon 4d/12d blend, drawdown cash boost)
+  Loss = KLD + Ranking×0.05 + VICReg×0.05 + PriceMSE×0.3
+- **Phase 2**: GRPO (pure reward = return − cost, no asymmetric penalty)
+
+### Walk-Forward Results (v15)
+Trained on 5 rounds R1-R5, 8-hour OHLCV bars, BTC/ETH/SOL/XRP/DOGE.
